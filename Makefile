@@ -21,7 +21,8 @@ PWD = $(shell pwd)
 #	srcs	#
 #################
 #SRC := $(foreach sdir,$(PWD),$(wildcard $(sdir)/*.c))
-SRC = $(PWD)/main.c
+SRC = $(PWD)/main.c \
+	$(PWD)/common.c
 
 OBJ := $(patsubst $(PWD)/%.c,$(PWD)/%.o,$(SRC))
 DIR_INC := $(addprefix -I,$(PWD))
