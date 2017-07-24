@@ -24,14 +24,16 @@ int main(int argc, char *argv[])
 		return S_FAIL;
 	}*/
 
-	int training_approach = BATCH_GRADIENT_DESCENT;
+	//int training_approach = BATCH_GRADIENT_DESCENT;
+	int training_approach =	PERCEPTRON_LEARNING_ALGORITHM;
 
 	int i, j, k;
 
 	// input training data
 	int x[2][NUM_OF_SAMPLES];
 	// target output
-	int y[NUM_OF_SAMPLES];
+	int y[NUM_OF_SAMPLES],
+		h[NUM_OF_SAMPLES];
 	// weight
 	double theta[3] = {0.1, 0.1, 0.1};
 
@@ -41,11 +43,24 @@ int main(int argc, char *argv[])
 	// how old is the house
 	set_int_random(NUM_OF_SAMPLES, 1, 20, x[1]);
 	// price 
+	int max = 0;
 	for (i = 0; i < NUM_OF_SAMPLES; i++)
+	{
 		y[i] = (int)(x[0][i]*35/x[1][i]);
+		if (y[i] > max)
+			max = y[i];
+	}
+
+	for (i = 0; i < NUM_OF_SAMPLES; i++)
+	{
+		if (y[i] > max*0.7)
+			h[i] = 1;	// expensive
+		else
+			h[i] = -1;
+	}
 
 
-	unsigned int count = 0;
+	unsigned int iteration = 0;
 	switch (training_approach)
 	{
 	case BATCH_GRADIENT_DESCENT:
@@ -56,7 +71,7 @@ int main(int argc, char *argv[])
 		while (TRUE)
 	#endif
 		{
-			count ++;
+			iteration ++;
 
 			double new_theta[3];
 			for (j = 0; j < 3; j++)
@@ -89,7 +104,7 @@ int main(int argc, char *argv[])
 				error += (y[j]-(theta[0] + theta[1]*x[0][j] + theta[2]*x[1][j]));
 
 			//if (i == 1)
-			printf("error = %.1f, count = %d \n", error, count);
+			printf("(%d) error = %.1f\n", iteration, error);
 			#if TERMINATE_BY_ERROR_CONVERGE
 			if (error <= converge_error)
 				break;
@@ -98,6 +113,33 @@ int main(int argc, char *argv[])
 
 		printf("theta = %.1f %.1f %.1f \n", theta[0], theta[1], theta[2]);
 
+	break;
+
+	case PERCEPTRON_LEARNING_ALGORITHM:
+		while (TRUE)
+		{
+			iteration ++;
+
+			int re_train = FALSE;
+			int error = 0;
+			for (i = 0; i < NUM_OF_SAMPLES; i++)
+			{
+				double v = sign(theta[0] + theta[1]*x[0][i] + theta[2]*x[1][i]);
+				if (sign(v) != h[i])
+				{
+					re_train = TRUE;
+
+					theta[0] += h[i];
+					theta[1] += h[i]*x[0][i];
+					theta[2] += h[i]*x[1][i];
+
+					error ++;
+				}
+			}
+			printf("(%d) error = %d \n", iteration, error);
+			if (!re_train)
+				break;
+		}
 	break;
 
 	default:

@@ -24,7 +24,8 @@ typedef enum
 typedef enum
 {
 	BATCH_GRADIENT_DESCENT = 0x00,
-	STOCHASTIC_GRADIENT_DESCENT = 0x01,
+	STOCHASTIC_GRADIENT_DESCENT,
+	PERCEPTRON_LEARNING_ALGORITHM,
 
 
 	TRAINING_APPROACH_MAX
@@ -32,5 +33,7 @@ typedef enum
 
 /* set random values to certain matrix */
 RESULT set_int_random(int , int , int , int *);
+/* sign */
+int sign(double);
 
 #endif
