@@ -3,23 +3,23 @@
 # Mailto: paul415236@gmail.com
 # Date: Jul.24 2017
 
-#################
-#	 modes	#
-#################
+#############
+#	modes	#
+#############
 
-#################
+#############
 #	target	#
-#################
+#############
 TARGET = out
 
-#################
-#	env	#
-#################
+#############
+#	env		#
+#############
 PWD = $(shell pwd)
 
-#################
+#############
 #	srcs	#
-#################
+#############
 #SRC := $(foreach sdir,$(PWD),$(wildcard $(sdir)/*.c))
 SRC = $(PWD)/src/main.c \
 	$(PWD)/src/common.c
@@ -27,18 +27,18 @@ SRC = $(PWD)/src/main.c \
 OBJ := $(patsubst $(PWD)/%.c,$(PWD)/%.o,$(SRC))
 DIR_INC := $(addprefix -I,$(PWD))
 
-#########################
+#################
 #	toolchain	#
-#########################
+#################
 CROSS_TOOL = 
 CC = gcc
 STRIP = strip
 CXX = g++
 AR = ar
 
-#########################
+#################
 #	INCs & LIBs	#
-#########################
+#################
 INC = -I$(PWD)
 INC = -I$(PWD)/src
 INC += -I/usr/local/include
@@ -46,9 +46,9 @@ INC += -I/usr/local/include
 LIB = -L$(PWD)
 LIB += -L/usr/local/lib
 
-#################
+#############
 #	FLAGS	#
-#################
+#############
 CFLAGS = -std=c11
 CFLAGS += -O2
 CFLAGS += -Wall

@@ -28,9 +28,9 @@ RESULT set_int_random(int num, int min, int max, int *src)
 */
 int sign(double v)
 {
-	if (v > 0)		return 1;
-	else if (v < 0)	return -1;
-	else			return 0;
+	if (v > 0.0)		return 1;
+	else if (v < 0.0)	return -1;
+	else				return 0;
 
 }
 

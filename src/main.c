@@ -14,6 +14,25 @@
 
 int main(int argc, char *argv[])
 {
+	if (argc > 1)
+	{
+		printf("usage: ./out mode entries x1 x2 .. xn \n");
+		if (argv[1][0] != 'a')
+		{
+			printf("mode: %c not supported. \n", argv[1][0]);
+			return S_FAIL;
+		}
+		else
+		{
+			printf("mode: testing. \n");
+			if (atoi(argv[2]) > 2)
+			{
+				printf("entries = %d is not supported. \n", atoi(argv[2]));
+				return S_FAIL;
+			}
+		}
+	}
+
 	int i, j, k;
 
 	/* parameters */
@@ -23,16 +42,9 @@ int main(int argc, char *argv[])
 	#elif TERMINATE_BY_ERROR_CONVERGE
 	double converge_error = 10.0;	// acceptable error to be terminated
 	#endif
-
-	/*if (argc < 2)
-	{
-		printf("usage: ./out learning_rate training_times \n");
-		return S_FAIL;
-	}*/
-
-	/* algorithm to be implemented */
 	//int training_approach = BATCH_GRADIENT_DESCENT;
-	int training_approach =	PERCEPTRON_LEARNING_ALGORITHM;
+	//int training_approach = STOCHASTIC_GRADIENT_DESCENT;
+	int training_approach = PERCEPTRON_LEARNING_ALGORITHM;
 
 	/* input data */
 	int x[2][NUM_OF_SAMPLES];	// input training data
@@ -42,6 +54,16 @@ int main(int argc, char *argv[])
 
 	// weight
 	double theta[3] = {0.1, 0.1, 0.1};
+	FILE *file_weight;
+	if (argc < 2) // non-testing mode
+	{
+		if ((file_weight = fopen("weights.txt", "w")) == NULL)
+		{
+			printf("open weights.txt fail. \n");
+			fclose(file_weight);
+			return S_FAIL;
+		}
+	}
 	/* pocket algorithm */
 	double pocket_theta[3] = { 0.0, 0.0, 0.0 };	// keeps the best weights in pocket
 	int min_error = NUM_OF_SAMPLES;				// current minimum error
@@ -55,17 +77,98 @@ int main(int argc, char *argv[])
 	{
 		y[i] = (int)(x[0][i]*35/x[1][i]);
 		if (y[i] > max)
+		{
 			max = y[i];
+		}
 	}
 
+	//printf("threshold = %f \n", max*0.6);
 	for (i = 0; i < NUM_OF_SAMPLES; i++)
 	{
-		if (y[i] > max*0.6)
+		if (y[i] > max*0.4)
+		{
 			h[i] = 1;	// expensive
+		}
 		else
 			h[i] = -1;
 	}
 
+	char *buf;
+	char ch;
+	int length = 0;
+	int entries = atoi(argv[2]);
+	if (argc > 1) // testing mode
+	{
+		double sum = 0.0;
+		switch (argv[1][0])
+		{
+		case 'a':
+			if (entries > (argc -3))
+			{
+				printf("insufficient inputs. \n");
+			}
+			else
+			{
+				if ((file_weight = fopen("weights.txt", "r")) == NULL)
+				{
+					printf("open weights.txt fail. \n");
+					fclose(file_weight);
+					return S_FAIL;
+				}
+
+				i = 0;
+				buf = (char *)malloc(sizeof(char)*15);
+				while (TRUE)
+				{
+					if (!fread(&ch, sizeof(char), 1, file_weight))
+					{
+						printf("read end. \n");
+						break;
+					}
+					sleep(0.2);
+					if (ch != '\n')
+					{
+						*(buf + length) = ch;
+						length ++;
+					}
+					else
+					{
+						theta[i] = atof(buf);
+						printf("theta[%d] = %f \n", i, theta[i]);
+
+						i++;
+						length = 0;
+						if ( i == (entries+1))
+							break;
+					}
+				}
+				free(buf);
+
+				j = 0;
+				sum += theta[j];
+				for (i = 3; i < argc; i++)
+				{
+					x[j][0] = atoi(argv[i]);
+					printf("x[%d][0] = %d \n", j, x[j][0]);
+
+					sum += theta[j+1]*x[j][0];
+
+					j++;
+				}
+
+				if (training_approach == PERCEPTRON_LEARNING_ALGORITHM)
+					printf("h(X) = %f -> %d \n", sum, sign(sum));
+				else
+					printf("h(X) = %f \n", sum);
+
+			}
+			return S_OK;
+		break;
+
+		default:
+		break;
+		}
+	} // if (argc > 1)
 
 	unsigned int iteration = 0;
 	switch (training_approach)
@@ -119,6 +222,9 @@ int main(int argc, char *argv[])
 		}
 
 		printf("theta = %.1f %.1f %.1f \n", theta[0], theta[1], theta[2]);
+		fprintf(file_weight, "%f\n", theta[0]);
+		fprintf(file_weight, "%f\n", theta[1]);
+		fprintf(file_weight, "%f\n", theta[2]);
 
 	break; // case BATCH_GRADIENT_DESCENT:
 
@@ -127,15 +233,15 @@ int main(int argc, char *argv[])
 		{
 			iteration ++;
 
-			int re_train = FALSE;
 			int error = 0;
 			for (i = 0; i < NUM_OF_SAMPLES; i++)
 			{
-				double v = sign(theta[0] + theta[1]*x[0][i] + theta[2]*x[1][i]);
+				double v = theta[0] + theta[1]*x[0][i] + theta[2]*x[1][i];
+				//if (h[i] == 1)
+					//printf("## h[%d] = %d, v = %f, sign(v) = %d, x = [%d %d] \n", i, h[i], v, sign(v), x[0][i], x[1][i]);
+
 				if (sign(v) != h[i])
 				{
-					re_train = TRUE;
-
 					theta[0] += h[i];
 					theta[1] += h[i]*x[0][i];
 					theta[2] += h[i]*x[1][i];
@@ -153,11 +259,11 @@ int main(int argc, char *argv[])
 			}
 
 			printf("(%d) error = %d \n", iteration, error);
-			if (!re_train)
+			if (error == 0)
 				break;
 			else if (iteration > max_training_times)
 			{
-				printf("unable to converge with no mistakes, break with minimum error. \n");
+				printf("unable to be convergent without mistakes, terminate training with minimum error. \n");
 				theta[0] = pocket_theta[0];
 				theta[1] = pocket_theta[1];
 				theta[2] = pocket_theta[2];
@@ -168,6 +274,10 @@ int main(int argc, char *argv[])
 		}
 
 		printf("theta = %.1f %.1f %.1f \n", theta[0], theta[1], theta[2]);
+		fprintf(file_weight, "%f\n", theta[0]);
+		fprintf(file_weight, "%f\n", theta[1]);
+		fprintf(file_weight, "%f\n", theta[2]);
+
 
 	break; // case PERCEPTRON_LEARNING_ALGORITHM:
 
@@ -176,6 +286,8 @@ int main(int argc, char *argv[])
 	break;
 	}
 
+
+	fclose(file_weight);
 
     return S_OK;
 }

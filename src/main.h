@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 /* bool */
 #ifndef TRUE
@@ -40,5 +41,4 @@ typedef enum
 RESULT set_int_random(int , int , int , int *);
 /* sign */
 int sign(double);
-
 #endif
