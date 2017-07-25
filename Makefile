@@ -21,8 +21,8 @@ PWD = $(shell pwd)
 #	srcs	#
 #################
 #SRC := $(foreach sdir,$(PWD),$(wildcard $(sdir)/*.c))
-SRC = $(PWD)/main.c \
-	$(PWD)/common.c
+SRC = $(PWD)/src/main.c \
+	$(PWD)/src/common.c
 
 OBJ := $(patsubst $(PWD)/%.c,$(PWD)/%.o,$(SRC))
 DIR_INC := $(addprefix -I,$(PWD))
@@ -40,6 +40,7 @@ AR = ar
 #	INCs & LIBs	#
 #########################
 INC = -I$(PWD)
+INC = -I$(PWD)/src
 INC += -I/usr/local/include
 
 LIB = -L$(PWD)
