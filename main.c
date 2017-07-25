@@ -2,20 +2,21 @@
 #include <main.h>
 #endif
 
-#define NUM_OF_SAMPLES  (100)
+#define NUM_OF_SAMPLES  (100)	// number of samples each input entry
 
-#define TERMINATE_BY_TRAINING_TIMES	(0)
-#define TERMINATE_BY_ERROR_CONVERGE	(1)
+#define TERMINATE_BY_TRAINING_TIMES	(0) // terminate the date training according to interation of training
+#define TERMINATE_BY_ERROR_CONVERGE	(1) // terminate the data training according to error
 
 int main(int argc, char *argv[])
 {
-	// learning rate
-	double alpha = 0.0000002;
+	int i, j, k;
+
+	/* parameters */
+	double alpha = 0.0000002;		// learning rate
 	#if TERMINATE_BY_TRAINING_TIMES
-	// training_times
-	int training_times = 2000;
+	int training_times = 2000;		// training_times
 	#elif TERMINATE_BY_ERROR_CONVERGE
-	double converge_error = 10.0;
+	double converge_error = 10.0;	// acceptable error to be terminated
 	#endif
 
 	/*if (argc < 2)
@@ -24,25 +25,26 @@ int main(int argc, char *argv[])
 		return S_FAIL;
 	}*/
 
+	/* algorithm to be implemented */
 	//int training_approach = BATCH_GRADIENT_DESCENT;
 	int training_approach =	PERCEPTRON_LEARNING_ALGORITHM;
 
-	int i, j, k;
-
-	// input training data
-	int x[2][NUM_OF_SAMPLES];
-	// target output
+	/* input data */
+	int x[2][NUM_OF_SAMPLES];	// input training data
+	/* output data */
 	int y[NUM_OF_SAMPLES],
 		h[NUM_OF_SAMPLES];
+
 	// weight
 	double theta[3] = {0.1, 0.1, 0.1};
+	/* pocket algorithm */
+	double pocket_theta[3] = { 0.0, 0.0, 0.0 };	// keeps the best weights in pocket
+	int min_error = NUM_OF_SAMPLES;				// current minimum error
+	int max_training_times = NUM_OF_SAMPLES*10; // threshold to apply pocket algorithm
 
-
-	// square footage of the house
-	set_int_random(NUM_OF_SAMPLES, 0, 50, x[0]);
-	// how old is the house
-	set_int_random(NUM_OF_SAMPLES, 1, 20, x[1]);
-	// price 
+	set_int_random(NUM_OF_SAMPLES, 0, 50, x[0]);	// square footage of the house
+	set_int_random(NUM_OF_SAMPLES, 1, 20, x[1]);	// how old is the house
+	// price
 	int max = 0;
 	for (i = 0; i < NUM_OF_SAMPLES; i++)
 	{
@@ -113,7 +115,7 @@ int main(int argc, char *argv[])
 
 		printf("theta = %.1f %.1f %.1f \n", theta[0], theta[1], theta[2]);
 
-	break;
+	break; // case BATCH_GRADIENT_DESCENT:
 
 	case PERCEPTRON_LEARNING_ALGORITHM:
 		while (TRUE)
@@ -136,14 +138,33 @@ int main(int argc, char *argv[])
 					error ++;
 				}
 			}
+
+			if (error < min_error)
+			{
+				pocket_theta[0] = theta[0];
+				pocket_theta[1] = theta[1];
+				pocket_theta[2] = theta[2];
+				min_error = error;
+			}
+
 			printf("(%d) error = %d \n", iteration, error);
 			if (!re_train)
 				break;
+			else if (iteration > max_training_times)
+			{
+				printf("unable to converge with no mistakes, break with minimum error. \n");
+				theta[0] = pocket_theta[0];
+				theta[1] = pocket_theta[1];
+				theta[2] = pocket_theta[2];
+				error = min_error;
+				printf("(%d) error = %d \n", iteration + 1, error);
+				break;
+			}
 		}
 
 		printf("theta = %.1f %.1f %.1f \n", theta[0], theta[1], theta[2]);
 
-	break;
+	break; // case PERCEPTRON_LEARNING_ALGORITHM:
 
 	default:
 		printf("unknow training_approach. ");
