@@ -1,3 +1,8 @@
+/*
+ * File: common.c
+ * Author: Paul Lin
+ * Mailto: paul415236@gmail.com
+*/
 #ifndef MAIN_H
 #include <main.h>
 

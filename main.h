@@ -1,3 +1,8 @@
+/*
+ * File: main.h
+ * Author: Paul Lin
+ * Mailto: paul415236@gmail.com
+*/
 #ifndef MAIN_H
 #define MAIN_H
 
