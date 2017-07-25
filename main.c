@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 
 	for (i = 0; i < NUM_OF_SAMPLES; i++)
 	{
-		if (y[i] > max*0.7)
+		if (y[i] > max*0.6)
 			h[i] = 1;	// expensive
 		else
 			h[i] = -1;
@@ -140,6 +140,9 @@ int main(int argc, char *argv[])
 			if (!re_train)
 				break;
 		}
+
+		printf("theta = %.1f %.1f %.1f \n", theta[0], theta[1], theta[2]);
+
 	break;
 
 	default:

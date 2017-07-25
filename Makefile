@@ -63,12 +63,12 @@ vpath %.c $(PWD)
 .PHONY: clean
 
 %.o: %.c
-	@echo CC $@
+	@echo "\033[32m CC $@ \033[0m"
 	@$(CC) $(CFLAGS) $(LFLAGS) -o $@ -c $< $(INC) $(LIB)
 
 all: clean $(OBJ)
 	@$(CC) $(OBJ) -o $(TARGET) $(CFLAGS) $(LFLAGS) $(INC) $(LIB)
-	@echo STRIP $(TARGET)
+	@echo "\033[32m STRIP $(TARGET) \033[0m"
 	@$(STRIP) $(TARGET)
 
 clean:
