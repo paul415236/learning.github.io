@@ -4,21 +4,21 @@
 # Date: Jul.24 2017
 
 #############
-#	modes	#
+#    modes  #
 #############
 
 #############
-#	target	#
+#   target  #
 #############
 TARGET = out
 
 #############
-#	env		#
+#    env    #
 #############
 PWD = $(shell pwd)
 
 #############
-#	srcs	#
+#    srcs   #
 #############
 #SRC := $(foreach sdir,$(PWD),$(wildcard $(sdir)/*.c))
 SRC = $(PWD)/src/main.c \
@@ -28,7 +28,7 @@ OBJ := $(patsubst $(PWD)/%.c,$(PWD)/%.o,$(SRC))
 DIR_INC := $(addprefix -I,$(PWD))
 
 #################
-#	toolchain	#
+#    toolchain  #
 #################
 CROSS_TOOL = 
 CC = gcc
@@ -36,9 +36,9 @@ STRIP = strip
 CXX = g++
 AR = ar
 
-#################
-#	INCs & LIBs	#
-#################
+###################
+#    INCs & LIBs  #
+###################
 INC = -I$(PWD)
 INC = -I$(PWD)/src
 INC += -I/usr/local/include
@@ -47,7 +47,7 @@ LIB = -L$(PWD)
 LIB += -L/usr/local/lib
 
 #############
-#	FLAGS	#
+#    FLAGS  #
 #############
 CFLAGS = -std=c11
 CFLAGS += -O2
