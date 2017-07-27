@@ -5,7 +5,7 @@
 */
 #ifndef MAIN_H
 #include <main.h>
-
+#endif
 
 /*
  * brief set random value to a matrix
@@ -34,4 +34,24 @@ int sign(double v)
 
 }
 
-#endif
+RESULT show_approach(int s)
+{
+	switch (s)
+	{
+	case BATCH_GRADIENT_DESCENT:
+		printf("BATCH_GRADIENT_DESCENT. \n");
+	break;
+	case STOCHASTIC_GRADIENT_DESCENT:
+		printf("STOCHASTIC_GRADIENT_DESCENT. \n");
+	break;
+	case PERCEPTRON_LEARNING_ALGORITHM:
+		printf("PERCEPTRON_LEARNING_ALGORITHM. \n");
+	break;
+
+	default:
+	break;
+	}
+
+    return S_OK;
+}
+

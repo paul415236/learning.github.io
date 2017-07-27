@@ -22,7 +22,9 @@ PWD = $(shell pwd)
 #############
 #SRC := $(foreach sdir,$(PWD),$(wildcard $(sdir)/*.c))
 SRC = $(PWD)/src/main.c \
-	$(PWD)/src/common.c
+	$(PWD)/src/common.c \
+	$(PWD)/src/gradient_descent.c \
+	$(PWD)/src/pla.c
 
 OBJ := $(patsubst $(PWD)/%.c,$(PWD)/%.o,$(SRC))
 DIR_INC := $(addprefix -I,$(PWD))
@@ -73,5 +75,5 @@ all: clean $(OBJ)
 	@$(STRIP) $(TARGET)
 
 clean:
-	rm -f $(PWD)/*.o
+	rm -f $(PWD)/src/*.o
 	rm -f $(TARGET)

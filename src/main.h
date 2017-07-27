@@ -19,6 +19,11 @@
 #define FALSE	(0)
 #endif
 
+#define NUM_OF_SAMPLES	(100)
+#define TERMINATE_BY_TRAINING_TIMES (0) // terminate the date training according to interation of training
+#define TERMINATE_BY_ERROR_CONVERGE (1) // terminate the data training according to error
+
+
 typedef enum
 {
 	S_UNKNOWN = 0x00,
@@ -29,7 +34,7 @@ typedef enum
 
 typedef enum
 {
-	BATCH_GRADIENT_DESCENT = 0x00,
+	BATCH_GRADIENT_DESCENT = 0,
 	STOCHASTIC_GRADIENT_DESCENT,
 	PERCEPTRON_LEARNING_ALGORITHM,
 
@@ -41,4 +46,12 @@ typedef enum
 RESULT set_int_random(int , int , int , int *);
 /* sign */
 int sign(double);
+/* show training approach */
+RESULT show_approach(int);
+
+/* gradient descent*/
+RESULT gradient_descent(int);
+
+/* perceptron learning algorithm */
+RESULT pla(int);
 #endif
