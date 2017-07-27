@@ -60,6 +60,7 @@ CFLAGS += -Wall
 #CFLAGS += -da
 
 LFLAGS = -lpthread
+LFLAGS += -lm
 
 vpath %.c $(PWD)
 
